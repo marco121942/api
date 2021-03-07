@@ -29,7 +29,7 @@ class UsuarioController extends Controller
             $usuario->segundo_apellido = $data['last_name'];
             $usuario->cui = $data['cui'];
             $usuario->fecha_reg = date("Y-m-d");
-            $usuario->save();
+            $resultado= $usuario->save();
             return response()->json([
                 "status" => 200,
                 "name" =>$data['name'],
@@ -57,10 +57,22 @@ class UsuarioController extends Controller
     public function EnviarCorreo(Request $request)
     {
         $user = Usuario::find($request->input("usuario_id"));
-        $user = Usuario::all()->first();
+        $name = $user-> nombre . date("Y") . date("m") . date("d");
+
+        $nameqr = $name . '.svg';
+        QrCode::generate(env('APP_URL'), public_path() . '/qrcodes/' . $nameqr);
+
+        $user->pdf =  $name;
+        $user->cod_qr =  $nameqr;
+        $user->save();
+
         $pdf = PDF::loadView('pdf.pdf', compact('data'));
+        $pdf->save(public_path() . '/storage/' . $name . '.pdf');
         $informe = $pdf->output();
-        Mail::to($request->input("correo"))->send(new ImmMailable($informe));
+
+
+        Mail::to($request->input("correo"))->send(new ImmMailable($informe,$name));
+
         return response()->json([
             "status" => 200,
             "message" => "Revise su correo",

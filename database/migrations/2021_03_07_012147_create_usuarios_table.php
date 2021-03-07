@@ -22,6 +22,7 @@ class CreateUsuariosTable extends Migration
             $table->integer('cui')->nullable();
             $table->boolean('fig_acepto')->default(false);
             $table->string('cod_qr', 300)->nullable();
+            $table->string('pdf', 300)->nullable();
             $table->datetime('fecha_reg')->nullable();
             $table->timestamps();
         });

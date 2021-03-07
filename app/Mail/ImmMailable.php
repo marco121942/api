@@ -19,10 +19,11 @@ class ImmMailable extends Mailable
      *
      * @return void
      */
-    public function __construct($pdf)
+    public function __construct($pdf,$name)
     {
         //
         $this->pdf = $pdf;
+        $this->name = $name;
     }
 
     /**
@@ -32,6 +33,6 @@ class ImmMailable extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.reclamo')->attachData($this->pdf, 'informe.pdf');
+        return $this->view('emails.reclamo')->attachData($this->pdf, $this->name.'.pdf');
     }
 }
